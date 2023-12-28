@@ -5,7 +5,7 @@ const { addNews,getAllNews ,getNewsById  ,getSliderNews , getNewsByCategory , de
 
 
 router.route('/addNews').post(protect, addNews);
-router.route('/getAllNews/:pageNum/:pageSize').get(protect, getAllNews);
+router.route('/getAllNews').get(protect, getAllNews);
 router.route('/getNewsById/:newsId').get(getNewsById);  
 router.route('/getAllNews/slider').get( getSliderNews);
 router.route('/getNewsByCategory/:catId').get( getNewsByCategory);

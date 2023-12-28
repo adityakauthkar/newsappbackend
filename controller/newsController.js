@@ -5,7 +5,7 @@ const News = require('../models/newsModel');
 const ImageToBase64 = require('image-to-base64');
 
 
-//Add news 
+//1. Add news 
 const addNews = async (req, res, next) => {
     try {
 
@@ -32,6 +32,7 @@ const addNews = async (req, res, next) => {
         }
 
     } catch (error) {
+        console.error('Error adding news:', error);
         res.status(500).json({
             success: false,
             msg: 'Internal error occured  ',
@@ -40,62 +41,30 @@ const addNews = async (req, res, next) => {
 };
 
 
-//Fetch All news 
+//2.Fetch All news 
 const getAllNews = async (req, res, next) => {
     try {
-
-
-        const pageSize = req.params.pageSize;
-        const pageNum = req.params.pageNum;
-
-        var query = {};
-        if (pageNum == 0 || pageNum < 0) {
-            return res.status(401).json({
-                success: false,
-                msg: 'invalid page number should start from 1 '
-            });
-        }
-        query.skip = pageSize * (pageNum - 1);
-
-        query.limit = pageSize;
-
-
-
-        const newsList = await News.find({})
-            .sort('-addedAt')
-            .populate({ path: 'category', select: ['_id', 'category_name'] })
-            .limit(Number(query.limit))
-            .skip(Number(query.skip));
-
-
-        res.json({
-            success: true,
-            count: News.length,
-            data: newsList
-        });
+        const allNews = await News.find(); 
+        res.status(200).json(allNews);
     } catch (error) {
         res.status(500).json({
             success: false,
-            msg: 'Error occurred',
-            error: error.message
+            msg: 'news not fetched ',    
         });
     }
 };
 
 
-//Get News by Id 
+//3.Get News by Id 
 
 const getNewsById = async (req, res, next) => {
     try {
         const newsList = await News.findById(req.params.newsId)
             .populate({ path: 'category', select: ['_id', 'category_name'] })
 
-
-
-
         res.json({
             success: true,
-            data: newsList
+            data: newsList 
         });
     } catch (error) {
         res.status(500).json({
@@ -108,7 +77,7 @@ const getNewsById = async (req, res, next) => {
 
 
 
-//News for Slider 
+//4.News for Slider 
 const getSliderNews = async (req, res, next) => {
     try {
         const newsList = await News.find({addToSlider: true})
@@ -133,7 +102,7 @@ const getSliderNews = async (req, res, next) => {
 
 
 
-//Get News By Category
+//5.Get News By Category
 const getNewsByCategory= async (req, res, next) => {
     try {
         const newsList = await News.find({category: req.params.catId})
@@ -158,7 +127,7 @@ const getNewsByCategory= async (req, res, next) => {
 
 
 
-//Delete News 
+//6.Delete News 
 const deleteNewsById = async (req, res, next) => {
 
     try {
@@ -188,7 +157,7 @@ const deleteNewsById = async (req, res, next) => {
 };
 
 
-//Edit News By Id 
+//7.Edit News By Id 
 const editNews = (async (req, res) => { 
     let news = await News.findById(req.params.newsId);
 
